@@ -18,18 +18,15 @@ class LRUCache(BaseCaching):
         if (key is None or item is None):
             return
 
-        if key not in self.cache_data:
-            if ((len(self.cache_data) + 1) > BaseCaching.MAX_ITEMS):
-                ckey, _ = self.cache_data.popitem(False)
-                print(f"DISCARD:", ckey)
+        if ((len(self.cache_data) + 1) > BaseCaching.MAX_ITEMS):
+            ckey, _ = self.cache_data.popitem(False)
+            print(f"DISCARD:", ckey)
 
-            self.cache_data[key] = item
-            self.cache_data.move_to_end(key)
-        else:
-            self.cache_data[key] = item
+        self.cache_data[key] = item
+        self.cache_data.move_to_end(key)
 
     def get(self, key):
         """gets the cache data for a specific key"""
         if key in self.cache_data and key is not None:
-           self.cache_data.move_to_end(key) 
+            self.cache_data.move_to_end(key)
         return (self.cache_data.get(key))
