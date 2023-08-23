@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """contains a class that implements LRU caching"""
 from base_caching import BaseCaching
-from cachetools import LRUCache
+from collections import OrderedDict
 
 
 class LRUCache(BaseCaching):
@@ -11,7 +11,7 @@ class LRUCache(BaseCaching):
     def __init__(self):
         super().__init__()
         max = BaseCaching.MAX_ITEMS
-        self.cache_data = LRUCache(maxsize=max)
+        self.cache_data = OrderedDict()
 
     def put(self, key, item):
         """adds data to the cache"""
@@ -20,10 +20,11 @@ class LRUCache(BaseCaching):
             return
 
         if ((len(self.cache_data) + 1) > BaseCaching.MAX_ITEMS):
-            ckey, _ = self.cache_data.popitem()
+            ckey, _ = self.cache_data.popitem(False)
             print(f"DISCARD:", ckey)
 
         self.cache_data[key] = item
+        self.cache_data.move_to_end(key)
 
     def get(self, key):
         """gets the cache data for a specific key"""
