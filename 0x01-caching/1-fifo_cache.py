@@ -21,7 +21,7 @@ class FIFOCache(BaseCaching):
         if (len(cache) > self.MAX_ITEMS):
             ckey, _ = orderedCache.popitem(last=False)
             del cache[ckey]
-            print(f"DISCARD: {ckey}")
+            print(f"DISCARD:{ckey}")
 
         self.cache_data[key] = item
 
