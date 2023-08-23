@@ -1,62 +1,64 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """ 100-lfu_cache """
+from collections import OrderedDict
 from base_caching import BaseCaching
 
 
 class LFUCache(BaseCaching):
-    """implements the least recently used cache
-    replacement policy"""
+    """ LFUCache inherits from BaseCaching and is a caching system """
     def __init__(self):
+        """ Initialize LFUCache """
         super().__init__()
-        self.freq_count = {}
-        self.lfu_counter = 0
+        self.frequency_data = {}
+        self.lru_data = OrderedDict()
 
     def update_frequency(self, key):
-        """updates the frequency"""
-        if key in self.freq_count:
-            self.freq_count[key] += 1
+        """ Update the frequency of the given key """
+        if key in self.frequency_data:
+            self.frequency_data[key] += 1
         else:
-            self.freq_count[key] = 1
+            self.frequency_data[key] = 1
 
-    def update_lfu_counter(self):
-        """update the counter"""
-        self.lfu_counter += 1
-        return self.lfu_counter
-
-    def update_least_frequent(self):
-        """update the least frequently used"""
-        min_freq = min(self.freq_count.values())
-        least_frequent_keys = [key for key, freq in
-                               self.freq_count.items() if freq == min_freq]
-        return min(least_frequent_keys, key=lambda key: self.data[key][1])
+    def update_lru(self, key):
+        """ Update the least recently used data """
+        if key in self.lru_data:
+            del self.lru_data[key]
+        self.lru_data[key] = None
 
     def put(self, key, item):
-        """adds data to the cache"""
+        """ Add an item to the cache """
         if key is None or item is None:
             return
 
-        if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
-            lfu_key = self.update_least_frequent()
-            if self.freq_count[lfu_key] > 1:
-                lru_key = min(self.cache_data,
-                              key=lambda key: self.data[key][1])
-                print("DISCARD:", lru_key)
-                self.cache_data.pop(lru_key)
-                self.freq_count.pop(lru_key)
-            else:
-                print("DISCARD:", lfu_key)
-                self.cache_data.pop(lfu_key)
-                self.freq_count.pop(lfu_key)
+        if len(self.cache_data) >= self.MAX_ITEMS:
+            # Find the least frequency used items
+            min_frequency = min(self.frequency_data.values())
+            least_frequent_keys = [k for k, v in self.frequency_data.items()
+                                   if v == min_frequency]
 
-        self.cache_data[key] = (item, self.update_lfu_counter())
-        self.freq_count[key] = 1
+            if len(least_frequent_keys) > 1:
+                # If there are multiple least frequent keys, use LRU
+                lru_key = next(iter(self.lru_data))
+                least_frequent_keys.remove(lru_key)
+                key_to_discard = min(least_frequent_keys,
+                                     key=lambda k: self.lru_data[k])
+            else:
+                key_to_discard = least_frequent_keys[0]
+
+            del self.cache_data[key_to_discard]
+            del self.frequency_data[key_to_discard]
+            del self.lru_data[key_to_discard]
+            print("DISCARD:", key_to_discard)
+
+        self.cache_data[key] = item
+        self.update_frequency(key)
+        self.update_lru(key)
 
     def get(self, key):
-        """gets data from the cache"""
+        """ Get an item from the cache """
         if key is None or key not in self.cache_data:
             return None
 
         self.update_frequency(key)
-        self.cache_data[key] = (self.cache_data[key][0],
-                                self.update_lfu_counter())
-        return self.cache_data[key][0]
+        self.update_lru(key)
+        return self.cache_data[key]
