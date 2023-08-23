@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """ 100-lfu_cache """
 from base_caching import BaseCaching
 
