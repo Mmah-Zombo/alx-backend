@@ -14,15 +14,15 @@ class FIFOCache(BaseCaching):
 
     def put(self, key, item):
         """adds data to the cache"""
-        cache = self.cache_data
 
         if (key is None or item is None):
             return
-        if (len(cache) > self.MAX_ITEMS):
-            ckey, _ = cache.popitem(last=False)
-            print(f"DISCARD:{ckey}")
 
         self.cache_data[key] = item
+
+        if (len(self.cache_data) > BaseCaching.MAX_ITEMS):
+            ckey, _ = self.cache_data.popitem(False)
+            print(f"DISCARD:", ckey)
 
     def get(self, key):
         """gets the cache data for a specific key"""
