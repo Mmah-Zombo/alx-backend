@@ -18,14 +18,12 @@ class FIFOCache(BaseCaching):
 
         if (key is None or item is None):
             return
-
-        self.cache_data[key] = item
-
         if (len(cache) > self.MAX_ITEMS):
             ckey, _ = orderedCache.popitem(last=False)
             del cache[ckey]
             print(f"DISCARD:{ckey}")
 
+        self.cache_data[key] = item
 
     def get(self, key):
         """gets the cache data for a specific key"""
