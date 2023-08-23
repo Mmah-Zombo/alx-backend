@@ -10,7 +10,6 @@ class LRUCache(BaseCaching):
     """
     def __init__(self):
         super().__init__()
-        max = BaseCaching.MAX_ITEMS
         self.cache_data = OrderedDict()
 
     def put(self, key, item):
@@ -19,12 +18,15 @@ class LRUCache(BaseCaching):
         if (key is None or item is None):
             return
 
-        if ((len(self.cache_data) + 1) > BaseCaching.MAX_ITEMS):
-            ckey, _ = self.cache_data.popitem(False)
-            print(f"DISCARD:", ckey)
+        if key not in self.cache_data:
+            if ((len(self.cache_data) + 1) > BaseCaching.MAX_ITEMS):
+                ckey, _ = self.cache_data.popitem(False)
+                print(f"DISCARD:", ckey)
 
-        self.cache_data[key] = item
-        self.cache_data.move_to_end(key)
+            self.cache_data[key] = item
+            self.cache_data.move_to_end(key)
+        else:
+            self.cache_data[key] = item
 
     def get(self, key):
         """gets the cache data for a specific key"""
