@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Simple helper function"""
 import csv
+import math
 from typing import List
 from typing import Tuple
 
@@ -38,6 +39,6 @@ class Server:
         assert isinstance(page_size, int) and page_size > 0
         data = self.dataset()
         start, end = index_range(page, page_size)
-        if start >= len(data):
+        if (end) > len(data) or start >= len(data):
             return []
-        return data[start, end]
+        return data[start:end]
