@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Simple helper function"""
 import csv
-import math
 from typing import List
 from typing import Tuple
 
@@ -34,11 +33,12 @@ class Server:
         return self.__dataset
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
-        """gets the page"""
-        assert isinstance(page, int) and page > 0
-        assert isinstance(page_size, int) and page_size > 0
-        data = self.dataset()
+        """Retrieves a page of data.
+        """
+        assert type(page) == int and type(page_size) == int
+        assert page > 0 and page_size > 0
         start, end = index_range(page, page_size)
-        if (end) > len(data) or start >= len(data):
+        data = self.dataset()
+        if start > len(data):
             return []
-        return data[start, end]
+        return data[start:end]
