@@ -45,10 +45,10 @@ class Server:
 
     def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict:
         """gets the hyper link - I guess"""
-        nextPage = page + 1
-        prevPage = page - 1
         data = self.get_page(page, page_size)
         total = math.ceil(len(self.dataset()) / page_size)
+        nextPage = page + 1 if (page + 1 <= total) else None
+        prevPage = page - 1 if (page - 1 > 0) else None
         Hdict = {
             'page_size': page_size,
             'page': page,
