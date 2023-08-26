@@ -41,7 +41,7 @@ class Server:
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
         """another type of hypermedia function"""
-        assert (index) > len(data) or index <= 0
+        assert (index) > len(data) and index <= 0
         startIndex = index * page_size if index is not None else 0
         dt = self.__indexed_dataset
         nextIndex = startIndex + page_size
@@ -49,7 +49,7 @@ class Server:
         Hdict = {
             'index': startIndex,
             'next_index': nextIndex,
-            'page_size': len(data),
+            'page_size': page_size,
             'data': data
         }
 
