@@ -49,7 +49,7 @@ class Server:
         Hdict = {
             'index': startIndex,
             'next_index': nextIndex,
-            'page_size': page_size,
+            'page_size': len(data),
             'data': data
         }
 
