@@ -42,7 +42,7 @@ class Server:
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
         """another type of hypermedia function"""
         dt = self.indexed_dataset()
-        assert (index) <= len(dt) and index >= 0 and index is not None
+        assert (index) < len(dt) and index >= 0 and index is not None
         startIndex = index * page_size if index is not None else 0
         nextIndex = startIndex + page_size
         data = [dt[i] for i in range(startIndex, nextIndex)]
