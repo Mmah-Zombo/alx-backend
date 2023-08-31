@@ -23,10 +23,13 @@ users = {
 }
 
 
-@app.route('/')
-def index() -> str:
-    """renders a html page"""
-    return render_template('5-index.html')
+def get_user() -> Union[Dict, None]:
+    """gets a user"""
+    login_as = request.args.get('login_as', '')
+    if login_as:
+        return users.get(int(login_as))
+    else:
+        return None
 
 
 @app.before_request
@@ -45,13 +48,10 @@ def get_locale() -> str:
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-def get_user() -> Union[Dict, None]:
-    """gets a user"""
-    if request.args['login_as']:
-        login_as = request.args['login_as']
-        return users.get(login_as)
-    else:
-        return None
+@app.route('/')
+def index() -> str:
+    """renders a html page"""
+    return render_template('5-index.html')
 
 
 if __name__ == '__main__':
