@@ -29,6 +29,13 @@ def index() -> str:
     return render_template('5-index.html')
 
 
+@app.before_request
+def before_request() -> None:
+    """executes before other functions"""
+    user = get_user()
+    g.user = user
+
+
 @babel.localeselector
 def get_locale() -> str:
     """sets the defualt language for a user session"""
@@ -45,13 +52,6 @@ def get_user() -> Union[Dict, None]:
         return users.get(login_as)
     else:
         return None
-
-
-@app.before_request
-def before_request() -> None:
-    """executes before other functions"""
-    user = get_user()
-    g.user = user
 
 
 if __name__ == '__main__':

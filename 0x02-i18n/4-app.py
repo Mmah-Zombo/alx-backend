@@ -25,9 +25,9 @@ def index() -> str:
 @babel.localeselector
 def get_locale() -> str:
     """sets the defualt language for a user session"""
-    if 'locale' in request.args and (request.args['locale']
-                                     in app.config['LANGUAGES']):
-        return str(request.args['locale'])
+    locale = request.args.get('locale', '')
+    if locale in app.config['LANGUAGES']:
+        return locale
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
