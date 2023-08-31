@@ -25,7 +25,7 @@ users = {
 
 def get_user() -> Union[Dict, None]:
     """gets a user"""
-    login_as = request.args.get('login_as', '')
+    login_as = request.args.get('login_as')
     if login_as:
         return users.get(int(login_as))
     else:
