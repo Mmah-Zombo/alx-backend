@@ -37,7 +37,7 @@ def get_user() -> Union[Dict, None]:
 def before_request() -> None:
     """executes before other functions"""
     user = get_user()
-    g.user = user
+    g.user = user if user else None
 
 
 @babel.localeselector
