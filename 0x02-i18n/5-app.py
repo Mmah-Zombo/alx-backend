@@ -22,6 +22,7 @@ users = {
     4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
 }
 
+
 @app.route('/')
 def index() -> str:
     """renders a html page"""
@@ -44,6 +45,14 @@ def get_user() -> Union[Dict, None]:
         return users.get(login_as)
     else:
         return None
-    
+
+
+@app.before_request
+def before_request() -> None:
+    """executes before other functions"""
+    user = get_user()
+    g.user = user
+
+
 if __name__ == '__main__':
     app.run(host='0.0.1', port=5000)
