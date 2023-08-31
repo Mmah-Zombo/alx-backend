@@ -23,20 +23,15 @@ users = {
 }
 
 
-def get_user() -> Union[Dict, None]:
+def get_user(user_id) -> Union[Dict, None]:
     """gets a user"""
-    login_as = request.args.get('login_as')
-    if login_as:
-        return users.get(int(login_as))
-    else:
-        return None
-
+    return users.get(user_id)
 
 @app.before_request
 def before_request() -> None:
     """executes before other functions"""
-    user = get_user()
-    g.user = user
+    user_id = request.args.get('login_as')
+    g.user = get_user(int(user_id)) if user_id else None
 
 
 @babel.localeselector
@@ -47,12 +42,10 @@ def get_locale() -> str:
         return locale
     if g.user and g.user.get('locale') in app.config['LANGUAGES']:
         return g.user.get('locale')
-    header_loc = request.accept_languages.best_match(app.config['LANGUAGES'])
-    if header_loc:
-        return header_loc
-
-    # Use the default locale
-    return app.config['BABEL_DEFAULT_LOCALE']
+    locale_h = request.headers.get('locale', '')
+    if locale_h in app.config['LANGUAGES']:
+        return locale_h
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 @app.route('/')

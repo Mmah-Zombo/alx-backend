@@ -24,20 +24,15 @@ users = {
 }
 
 
-def get_user() -> Union[Dict, None]:
+def get_user(user_id) -> Union[Dict, None]:
     """gets a user"""
-    login_as = request.args.get('login_as')
-    if login_as:
-        return users.get(int(login_as))
-    else:
-        return None
-
+    return users.get(user_id)
 
 @app.before_request
 def before_request() -> None:
     """executes before other functions"""
-    user = get_user()
-    g.user = user if user else None
+    user_id = request.args.get('login_as')
+    g.user = get_user(int(user_id)) if user_id else None
 
 
 @babel.localeselector
