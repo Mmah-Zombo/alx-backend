@@ -47,10 +47,12 @@ def get_locale() -> str:
         return locale
     if g.user and g.user.get('locale') in app.config['LANGUAGES']:
         return g.user.get('locale')
-    locale_h = request.headers.get('locale', '')
-    if locale_h in app.config['LANGUAGES']:
-        return locale_h
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    header_loc = request.accept_languages.best_match(app.config['LANGUAGES'])
+    if header_loc:
+        return header_loc
+
+    # Use the default locale
+    return app.config['BABEL_DEFAULT_LOCALE']
 
 
 @app.route('/')
