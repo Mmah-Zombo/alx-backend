@@ -2,17 +2,9 @@ import redis from 'redis';
 
 const client = redis.createClient();
 
-client.on('connect', () => {
-    console.log('Redis client connected to the server');
-});
-
 client.on('error', (err) => {
     console.log(`Redis client not connected to the server: ${err.message}`);
 });
-
-const updateHash = (hashName, field, value) => {
-    client.hSet(hashName, field, value, print);
-};
 
 const hashObj = {
     'Portland':50,
@@ -23,10 +15,25 @@ const hashObj = {
     'Paris':2,
 };
 
-for (const [field, value] in Object.entries(hashObj)) {
-    updateHash('HolbertonSchools', field, value);
+const updateHash = (hashName, field, value) => {
+    client.HSET(hashName, field, value, (_, res) => {
+        redis.print(res);
+        console.log('hi')
+    });
+};
+
+function main () {
+    for (const [field, value] of Object.entries(hashObj)) {
+        updateHash('HolbertonSchools', field, value);
+    }
+
+    client.HGETALL('HolbertonSchools', (_err, res) => {
+        console.log(res);
+    })
+
 }
 
-client.hGetAll('HolbertonSchools', (err, res) => {
-    console.log(res);
-})
+client.on('connect', () => {
+    console.log('Redis client connected to the server');
+    main();
+});
